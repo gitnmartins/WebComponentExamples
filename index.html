@@ -8,6 +8,7 @@
 
     <!-- scripts -->
     <script src="./components/tooltip.js"></script>
+    <script src="./components/card.js"></script>
   </head>
 
   <body>
@@ -15,5 +16,18 @@
     <example-tooltip tip-text="Some hint about this">
       Testing the tooltip
     </example-tooltip>
+
+    <br />
+
+    <example-card>
+      <h1 slot="title">Card</h1>
+      <p slot="content">
+        This is the body of the card, we can fill it with random text. Just like
+        the text we have right here, I am not saying much complete waffle some
+        would say.
+      </p>
+      <a href="#" slot="footer">This is the footer link</a>
+      <span slot="alt"> this shouldnt show up </span>
+    </example-card>
   </body>
 </html>
