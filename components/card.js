@@ -4,72 +4,58 @@ class Card extends HTMLElement {
     this.attachShadow({ mode: "open" });
     this.shadowRoot.innerHTML = /*html*/ `
             <style>
-                .card {
-                  max-width: 15rem;
-                  height: fit-content;
-                  padding: 1.5rem;
-                  border-radius: 5px;
-                  background-color: rgba(0,0,0, 0.5);
-                  color: white;
-                }
-
-                hr {
-                  width: 100%;
-                  border-color: rgba(255,255,255, 0.5);
-                }
+            .flip-card {
+              background-color: transparent;
+              width: 300px;
+              height: 300px;
+              perspective: 1000px;
+            }
+            
+            .flip-card-inner {
+              position: relative;
+              width: 100%;
+              height: 100%;
+              text-align: center;
+              transition: transform 0.6s;
+              transform-style: preserve-3d;
+              box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            }
+            
+            .flip-card:hover .flip-card-inner {
+              transform: rotateY(180deg);
+            }
+            
+            .flip-card-front, .flip-card-back {
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              -webkit-backface-visibility: hidden;
+              backface-visibility: hidden;
+            }
+            
+            .flip-card-front {
+              background-color: rgba(255,255,255);
+              color: black;
+            }
+            
+            .flip-card-back {
+              background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+              color: white;
+              transform: rotateY(180deg);
+            }
             </style>
 
-            <div class="card">
-                <slot name="title"></slot>
-                <hr>
-                <slot name="content"></slot>
-                <hr>
-                <slot name="footer"></slot>
-                <slot name="alt" hidden>
+            <div class="flip-card">
+              <div class="flip-card-inner">
+                <div class="flip-card-front">
+                  <slot name="main" />
+                </div>
+                <div class="flip-card-back">
+                  <slot name="flip" />
+                </div>
+              </div>
             </div>
         `;
-  }
-
-  connectedCallback() {
-    this._card = this.shadowRoot.querySelector(".card");
-    this._slots = this.shadowRoot.querySelectorAll("slot");
-    this._cardHeight = this._card.style.height;
-    console.log(this._cardHeight);
-
-    // Slot content
-    this._storedContent = [];
-    this._slots.forEach((slot) => {
-      this._storedContent.push(slot);
-    });
-    console.log(this._storedContent);
-
-    this._card.addEventListener("mouseover", this._rotateCard.bind(this));
-    this._card.addEventListener("mouseleave", this._returnCard.bind(this));
-  }
-
-  _rotateCard() {
-    // this._card.style.height = this._cardHeight;
-    let slot;
-    this._storedContent.forEach((element) => {
-      if (element.name === "alt") {
-        this._card.appendChild(element);
-      }
-    });
-    console.log(slot);
-    // this._card.innerHTML = slot;
-    this._card.appendChild(slot);
-  }
-
-  _returnCard() {
-    this._card.innerHTML = "";
-    this._storedContent.forEach((element, index) => {
-      if (element.name === "alt") return;
-      if (index > 0 && index < this._storedContent.length) {
-        this._card.appendChild(document.createElement("hr"));
-      }
-      this._card.appendChild(element);
-    });
-    // this._card.innerHTML = this._storedContent;
   }
 }
 
